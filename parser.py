@@ -77,8 +77,8 @@ def generate_insts_csv_file(fp):
 			log(f"写入了 {inst} 指令")
 			f.write(",".join([
 				inst.get_mnemonic(),
-				inst.get_addr_str(),
-				inst.get_op_num1(),
+				inst.get_mache_code1(),
+				inst.get_mache_code2(),
 				inst.get_comment()
 			]))
 	log(f"{filename} 文件写入完成")
