@@ -65,20 +65,23 @@ def parse_upros(f):
 
 
 def generate_insts_csv_file(fp):
-	with open(fp.name + ".csv", 'w') as f:
+	filename = fp.name + ".csv"
+	log(f"开始写入 {filename} 文件")
+	with open(filename, 'w') as f:
 		f.write(
 			"助记符,机器码1,机器码2,指令说明\n" +
 			"_FATCH_,000000xx 00-03,," +
 			"实验机占用，不可修改。复位后，所有寄存器清0，首先执行_FATCH_指令取指。\n"
 		)
 		for inst in insts:
+			log(f"写入了 {inst} 指令")
 			f.write(",".join([
 				inst.get_mnemonic(),
 				inst.get_addr_str(),
 				inst.get_op_num1(),
 				inst.get_comment()
 			]))
-	log("INS.CSV 文件写入完成")
+	log(f"{filename} 文件写入完成")
 
 
 def generate_upros_csv_file():
