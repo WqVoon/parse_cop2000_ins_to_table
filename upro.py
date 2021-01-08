@@ -7,6 +7,10 @@ class Uinst:
 		"""b 为 4 个 bytes"""
 		self.__byte = (b[2] << 16) + (b[1] << 8) + (b[0])
 
+	def is_default_uint(self):
+		"""该微指令是否为默认指令"""
+		return self.__byte == 0xffffff
+
 	def get_upro(self):
 		"""获取微程序"""
 		return hex(self.__byte)[2:].upper()
@@ -38,7 +42,7 @@ class Uinst:
 		if self.rwr():
 			buf.append("寄存器R?")
 		if self.fen():
-			buf.append("标志位C,Z")
+			buf.append("标志位C，Z")
 		if self.emwr():
 			buf.append("存贮器EM")
 		if self.iren():
@@ -80,6 +84,8 @@ class Uinst:
 			return "右移" if cn else "带进位右移"
 		if xs == 6 and cn:
 			return "左移" if cn else "带进位左移"
+		else:
+			return ""
 
 	def get_upc(self):
 		"""获取 uPC"""
@@ -95,7 +101,7 @@ class Uinst:
 		if self.pcoe():
 			return "+1\n"
 		else:
-			return " \n"
+			return "\n"
 
 	def get_xs(self):
 		"""计算 X2X1X0 形式的二进制值，对应十进制0-7"""

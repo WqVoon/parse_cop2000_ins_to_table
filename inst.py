@@ -6,6 +6,7 @@ class Inst:
 	"""
 
 	def __init__(self, op, addr, num1='', num2=''):
+		self.__t_cnt = 0
 		self.__op = op
 		self.__addr = addr
 		self.__num1 = num1
@@ -52,14 +53,22 @@ class Inst:
 	def get_comment(self):
 		"""获取指令注释"""
 		if self.__op != "_INT_":
-			return " \n"
+			return "\n"
 		else:
 			return "实验机占用，不可修改。进入中断时，实验机硬件产生 _INT_ 指令。\n"
 
-	def add_one_uinst(self, byte):
-		"""向 self.upros 加入一个 Uinst 对象"""
-		self.upros.append(Uinst(byte))
+	def get_max_t(self):
+		return self.__t_cnt
 
+	def add_one_uinst(self, byte):
+		"""
+			向 self.upros 加入一个 Uinst 对象
+			并根据 uinst 的值来判断是否增加 self.__t_cnt
+		"""
+		uinst = Uinst(byte)
+		if not uinst.is_default_uint():
+			self.__t_cnt += 1
+		self.upros.append(Uinst(byte))
 
 	def __str__(self):
 		return f"{self.__op} {self.__num1}，{self.__num2}"

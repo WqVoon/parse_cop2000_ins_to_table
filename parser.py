@@ -8,6 +8,9 @@ from utils import *
 # 保存当前已解析的指令
 insts = []
 
+# 保存当前已解析的微指令
+uinsts = []
+
 # 操作数的编码映射
 op_num_map = {
 	b'\x00': '',
@@ -62,7 +65,7 @@ def parse_insts(f):
 def parse_upros(f):
 	"""从文件中解析出微指令，并 4 个一组送给 insts 的 Inst"""
 	# TODO: 处理 _INT_ 的微指令
-	read(f, 3)
+	read(f, 15)
 	log(f"开始解析微程序部分，当前文件指针的位置为 {f.tell()}")
 	for inst in insts:
 		inst.add_one_uinst(read(f, 4))
@@ -93,7 +96,10 @@ def generate_insts_csv_file(fp):
 
 
 def generate_upros_csv_file(fp):
-	"""生成 微程序 的 csv 文件"""
+	"""
+		生成 微程序 的 csv 文件
+		对于 "状态" 的处理只是保证在最后一条为 T0 的条件下从第一条递减
+	"""
 	# TODO: 处理 _FATCH_ 的微指令
 	filename = fp.name + ".upro.csv"
 	log(f"开始写入 {filename} 文件")
@@ -102,11 +108,30 @@ def generate_upros_csv_file(fp):
 			"助记符,状态,微地址,微程序,数据输出,数据打入,地址输出,运算器,移位控制,uPC,PC\n" +
 			"_FATCH_,T0,00,CBFFFF,浮空,指令寄存器IR,PC输出,A输出,,写入,+1\n" +
 			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n" +
-			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n" +
-			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n"
+			",,02,FFFFFF,浮空,,浮空,A输出,,+1,\n" +
+			",,03,FFFFFF,浮空,,浮空,A输出,,+1,\n"
 		)
+		addr_cnt = 4
+		for inst in insts:
+			t_cnt = inst.get_max_t() - 1
+			show_mnemonic = True
+			for uinst in inst.upros:
+				f.write(",".join([
+					inst.get_mnemonic() if show_mnemonic else "",
+					f"T{t_cnt}" if t_cnt >= 0 else "",
+					hex(addr_cnt)[2:].rjust(2, '0').upper(),
+					uinst.get_upro(),
+					uinst.get_data_out(),
+					uinst.get_data_in(),
+					uinst.get_addr_out(),
+					uinst.get_calculator(),
+					uinst.get_bit_shift_control(),
+					uinst.get_upc(), uinst.get_pc()
+				]))
+				t_cnt -= 1
+				addr_cnt += 1
+				show_mnemonic = False
 	log(f"{filename} 文件写入完成")
-	pass
 
 
 def handle_int_inst(f, mnemonic):
