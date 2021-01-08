@@ -1,3 +1,5 @@
+from upro import Uinst
+
 class Inst:
 	"""
 	指令对象
@@ -53,6 +55,11 @@ class Inst:
 			return " \n"
 		else:
 			return "实验机占用，不可修改。进入中断时，实验机硬件产生 _INT_ 指令。\n"
+
+	def add_one_uinst(self, byte):
+		"""向 self.upros 加入一个 Uinst 对象"""
+		self.upros.append(Uinst(byte))
+
 
 	def __str__(self):
 		return f"{self.__op} {self.__num1}，{self.__num2}"

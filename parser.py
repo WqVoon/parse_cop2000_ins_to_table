@@ -38,7 +38,7 @@ def parse_insts(f):
 		假设 ins 文件中指令系统部分不会出现 \xff，故以此为循环结束条件
 	"""
 	tmp_data = handle_00_byte(f)
-	log(f"开始解析 Inst 文件，当前文件指针的位置为 {f.tell()}")
+	log(f"开始解析指令部分，当前文件指针的位置为 {f.tell()}")
 	while tmp_data != b'\xff':
 		try:
 			mnemonic_len = read(f)[0]
@@ -56,16 +56,24 @@ def parse_insts(f):
 			tmp_data = handle_00_byte(f)
 		except Exception as err:
 			error(f"解析失败，原因 {err}")
-	log("Inst 文件解析结束")
+	log("指令部分解析结束")
 
 
 def parse_upros(f):
-	"""从文件中解析出所有的微指令，并 4 个一组送给 insts 的 Inst"""
-	pass
+	"""从文件中解析出微指令，并 4 个一组送给 insts 的 Inst"""
+	# TODO: 处理 _INT_ 的微指令
+	read(f, 3)
+	log(f"开始解析微程序部分，当前文件指针的位置为 {f.tell()}")
+	for inst in insts:
+		inst.add_one_uinst(read(f, 4))
+		inst.add_one_uinst(read(f, 4))
+		inst.add_one_uinst(read(f, 4))
+		inst.add_one_uinst(read(f, 4))
+	log("微程序部分解析结束")
 
 
 def generate_insts_csv_file(fp):
-	filename = fp.name + ".csv"
+	filename = fp.name + ".inst.csv"
 	log(f"开始写入 {filename} 文件")
 	with open(filename, 'w') as f:
 		f.write(
@@ -84,8 +92,20 @@ def generate_insts_csv_file(fp):
 	log(f"{filename} 文件写入完成")
 
 
-def generate_upros_csv_file():
+def generate_upros_csv_file(fp):
 	"""生成 微程序 的 csv 文件"""
+	# TODO: 处理 _FATCH_ 的微指令
+	filename = fp.name + ".upro.csv"
+	log(f"开始写入 {filename} 文件")
+	with open(filename, 'w') as f:
+		f.write(
+			"助记符,状态,微地址,微程序,数据输出,数据打入,地址输出,运算器,移位控制,uPC,PC\n" +
+			"_FATCH_,T0,00,CBFFFF,浮空,指令寄存器IR,PC输出,A输出,,写入,+1\n" +
+			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n" +
+			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n" +
+			",,01,FFFFFF,浮空,,浮空,A输出,,+1,\n"
+		)
+	log(f"{filename} 文件写入完成")
 	pass
 
 
