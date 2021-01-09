@@ -1,11 +1,16 @@
+from sys import argv
 import parser
 import utils
 
 utils.IS_DEBUG_MODE = True
 
-parser.init()
+try:
+	filename = argv[1]
+except IndexError:
+	filename = input("请输入 *.INS 文件的路径:")
 
-with open("INST.INS", "rb") as f:
+parser.init()
+with open(filename, "rb") as f:
 	parser.is_valid_ins_file(f)
 	parser.parse_insts(f)
 	parser.generate_insts_csv_file(f)
