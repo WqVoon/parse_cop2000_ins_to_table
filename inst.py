@@ -18,6 +18,10 @@ class Inst:
 		"""获取助记符"""
 		return self.__str__()
 
+	def get_addr_num(self):
+		"""获取地址的数字形式"""
+		return self.__addr
+
 	def get_addr_str(self):
 		"""获取地址的字符串形式"""
 		bin_addr = bin(self.__addr)[2:].rjust(8, '0')[:-2] + 'xx'
