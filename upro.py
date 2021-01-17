@@ -80,9 +80,9 @@ class Uinst:
 		"""获取移位控制"""
 		xs = self.get_xs()
 		cn = self.cn()
-		if xs == 5 and cn:
+		if xs == 5:
 			return "右移" if cn else "带进位右移"
-		if xs == 6 and cn:
+		if xs == 6:
 			return "左移" if cn else "带进位左移"
 		else:
 			return ""
