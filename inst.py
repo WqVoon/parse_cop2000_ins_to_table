@@ -83,6 +83,10 @@ class Inst:
 		self.upros.append(Uinst(byte))
 
 	def __str__(self):
-		return f"{self.__op} {self.__num1}，{self.__num2}"
-		pass
+		res=f"{self.__op}"
+		if self.__num1!="":
+			res=res+f" {self.__num1}"
+		if self.__num2!="":
+			res=res+f"，{self.__num2}"
+		return res
 	pass
