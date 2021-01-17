@@ -25,8 +25,8 @@ class Inst:
 	def get_addr_str(self):
 		"""获取地址的字符串形式"""
 		bin_addr = bin(self.__addr)[2:].rjust(8, '0')[:-2] + 'xx'
-		hex_addr = hex(self.__addr)[2:].rjust(2, '0')
-		hex_addr_add_3 = hex(self.__addr+3)[2:].rjust(2, '0')
+		hex_addr = hex(self.__addr)[2:].rjust(2, '0').upper()
+		hex_addr_add_3 = hex(self.__addr + 3)[2:].rjust(2, '0').upper()
 		return f"{bin_addr} {hex_addr}-{hex_addr_add_3}"
 
 	def get_op_num1(self):
@@ -52,7 +52,15 @@ class Inst:
 
 	def get_mache_code3(self):
 		"""返回机器码3"""
-		pass
+		code_need_show_lst = ['#II', 'MM']
+		res = []
+		if self.__num1 in code_need_show_lst:
+			res.append(self.__num1)
+		if self.__num2 in code_need_show_lst:
+			res.append(self.__num2)
+		if len(res) >= 2:
+			return res[1]
+		return ""
 
 	def get_comment(self):
 		"""获取指令注释"""
