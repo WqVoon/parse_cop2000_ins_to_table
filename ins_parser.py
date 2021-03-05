@@ -7,8 +7,8 @@ from utils import *
 
 # *.inst.csv 的表头
 INST_CSV_HEADER = (
-	"助记符,机器码1,机器码2,指令说明\n" +
-	"_FATCH_,000000xx 00-03,," +
+	"助记符,机器码1,机器码2,机器码3,指令说明\n" +
+	"_FATCH_,000000xx 00-03,,," +
 	"实验机占用，不可修改。复位后，所有寄存器清0，首先执行_FATCH_指令取指。\n"
 )
 
@@ -112,6 +112,7 @@ def generate_insts_csv_file(fp):
 				inst.get_mnemonic(),
 				inst.get_mache_code1(),
 				inst.get_mache_code2(),
+				inst.get_mache_code3(),
 				inst.get_comment()
 			]))
 	log(f"{filename} 文件写入完成")
